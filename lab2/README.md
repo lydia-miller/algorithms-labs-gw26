@@ -213,7 +213,7 @@ At the beginning of each iteration of the `for j` loop, the array is partitioned
 > |---|---|---|---|---|---|---|---|
 > | **Init** | - | - | Initialize $i = low - 1 = -1$ | $-1$ | `[2, 8, 7, 1, 3, 5, 6, 4]` | `[]` | `[]` |
 > | **0 (Ex)** | `2` | Yes ($2 \le 4$) | $i \leftarrow 0$, swap $arr[0]$ with $arr[0]$ | 0 | `[2, 8, 7, 1, 3, 5, 6, 4]` | `[2]` | `[]` |
-> | **1 (TODO)** | `8` | | | | `[                       ]` | | |
+> | **1 (TODO)** | `8` | No (8 > 4) |  | | `[                       ]` | | |
 > | **2 (TODO)** | `7` | | | | `[                       ]` | | |
 > | **3 (TODO)** | `1` | | | | `[                       ]` | | |
 > | **4 (TODO)** | `3` | | | | `[                       ]` | | |
