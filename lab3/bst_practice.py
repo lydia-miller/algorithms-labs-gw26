@@ -64,7 +64,15 @@ def bst_insert(tree, key):
   Postconditions: tree satisfies BST search invariant; new node has correct parent.
   """
   # TODO 2.3A: Traverse downward to find parent slot, attach Node(key, parent=...), and update tree.root if empty.
-  raise NotImplementedError("Complete bst_insert")
+  z = Node(key)
+  parent = None
+  current = tree.root
+  while current != None:
+    parent = current
+    if key < current.key:
+      current = current.left
+      
+
 
 
 def bst_delete(tree, key):
