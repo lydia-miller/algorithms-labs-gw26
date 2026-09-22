@@ -339,8 +339,12 @@ python3 bst_practice.py
 **TODO 2.4A:** In a two-child deletion (Case 3), why is the in-order successor
 guaranteed never to have a left child?
 
+With a two-child deletion, you must move to the right and find the next up value in the right subtree. This means that it will be the farthest left of this right subtree, so it can have right children, but not left children.
+
 **TODO 2.4B:** When deleting the root node of the tree, what special pointer
 updates must take place regarding `tree.root` and `node.parent`?
+
+You must set the leftmost node of the right subtree to be the new root and set its parents to None. You also must set its left and right pointers to the original root's left and right children.
 
 All three basic BST operations (search, insert, delete) run in $O(h)$ time,
 where $h$ is the height of the tree. The iterative implementations require
@@ -375,14 +379,14 @@ the degenerate tree versus the balanced tree.
 | Step | Degenerate BST: Node visited | Degenerate: Key comparison | Degenerate: Node depth | Balanced BST: Node visited | Balanced: Key comparison | Balanced: Node depth |
 |---|---|---|---|---|---|---|
 | 1 | 1 | `7 > 1` (go right) | 0 | 4 | `7 > 4` (go right) | 0 |
-| 2 | TODO | TODO | TODO | TODO | TODO | TODO |
-| 3 | TODO | TODO | TODO | TODO | TODO | TODO |
-| 4 | TODO | TODO | TODO | — | — | — |
-| 5 | TODO | TODO | TODO | — | — | — |
-| 6 | TODO | TODO | TODO | — | — | — |
-| 7 | TODO | TODO | TODO | — | — | — |
+| 2 | 2 | `7 > 2` (go right) | 1 | 6 | `7 > 6` (go right) | 1 |
+| 3 | 3 | `7 > 3` (go right) | 2 | 7 | `7 = 7` (key found) | 2 |
+| 4 | 4 | `7 > 4` (go right) | 3 | — | — | — |
+| 5 | 5 | `7 > 5` (go right) | 4 | — | — | — |
+| 6 | 6 | `7 > 6` (go right) | 5 | — | — | — |
+| 7 | 7 | `7 = 7` (key found) | 6 | — | — | — |
 
-Record total comparisons: Degenerate: **TODO**, Balanced: **TODO**.
+Record total comparisons: Degenerate: **7**, Balanced: **3**.
 
 ### Height balance factors and violation signatures
 
@@ -418,15 +422,15 @@ each node. Remember that an empty child has height `-1`. Tree 1 is worked.
 | 1 (LL) | 10 | 0 | -1 | -1 | 0 |
 | 1 (LL) | 20 | 1 | 0 | -1 | +1 |
 | 1 (LL) | 30 | 2 | 1 | -1 | +2 |
-| 2 (RR) | 30 | TODO | TODO | TODO | TODO |
-| 2 (RR) | 20 | TODO | TODO | TODO | TODO |
-| 2 (RR) | 10 | TODO | TODO | TODO | TODO |
-| 3 (LR) | 20 | TODO | TODO | TODO | TODO |
-| 3 (LR) | 10 | TODO | TODO | TODO | TODO |
-| 3 (LR) | 30 | TODO | TODO | TODO | TODO |
-| 4 (RL) | 20 | TODO | TODO | TODO | TODO |
-| 4 (RL) | 30 | TODO | TODO | TODO | TODO |
-| 4 (RL) | 10 | TODO | TODO | TODO | TODO |
+| 2 (RR) | 30 | 0 | -1 | -1 | 0 |
+| 2 (RR) | 20 | 1 | -1 | 0 | -1 |
+| 2 (RR) | 10 | 2 | -1 | 1 | -2 |
+| 3 (LR) | 20 | 0 | -1 | -1 | 0 |
+| 3 (LR) | 10 | 1 | -1 | 0 | -1 |
+| 3 (LR) | 30 | 2 | 1 | -1 | -2 |
+| 4 (RL) | 20 | 0 | -1 | -1 | 0 |
+| 4 (RL) | 30 | 1 | 0 | -1 | +1 |
+| 4 (RL) | 10 | 2 | -1 | 1 | +2 |
 
 ### 3.3 Trace: Violation Diagnostics
 
@@ -437,18 +441,22 @@ exact rotation function call(s) required to restore balance. Tree 1 is worked.
 | Tree | Unbalanced node $z$ | $\text{BF}(z)$ | Child node inspected | Child $\text{BF}$ | Signature | Restorative rotation call(s) |
 |---|---|---|---|---|---|---|
 | 1 | 30 | +2 | 20 | +1 | LL | `rotate_right(tree, 30)` |
-| 2 | TODO | TODO | TODO | TODO | TODO | TODO |
-| 3 | TODO | TODO | TODO | TODO | TODO | TODO |
-| 4 | TODO | TODO | TODO | TODO | TODO | TODO |
+| 2 | 10 | -2 | 20 | -1 | RR | `rotate_left(tree, 10)` |
+| 3 | 30 | -2 | 10 | -1 | LR | `rotate_left(tree, 10)` then `rotate_right(tree, 30)` |
+| 4 | 10 | +2 | 30 | +1 | RL | `rotate_right(tree, 30)` then `rotate_left(tree, 10)` |
 
 ### 3.4 Short answers
 
 **TODO 3.4A:** What common real-world data patterns (such as timestamped logs or
 pre-sorted datasets) inadvertently construct worst-case degenerate BSTs?
 
+If there is a list in a pre-sorted database of birthdays/ages, then adding them into a BST would create a degenerate BST, since it is already sorted and would create a tree with the depth of the length of the birthday list, making it hard to insert, delete, and search the list.
+
 **TODO 3.4B:** Why does a single right rotation around node `30` fail to balance
 Tree 3 (the Left-Right tree with keys 30, 10, 20)? What structure results if a
 single rotation is attempted?
+
+With one right rotation, the resulting tree is 10 as the root, 20 as the left child, and 30 as the right child. This is an unsorted bst and the new root node needs to be properly sorted into the tree, therefore swapped with its left child, 20.
 
 The test suite in `lab_checks.py` demonstrates the difference empirically by
 searching 1,000 keys: 999 comparisons on a degenerate tree versus only 8 on a
@@ -553,7 +561,7 @@ worked.
 |---|---|---|---|---|---|---|---|---|
 | 30 | None | 20 | None | 2 | 20 | None | None | 0 |
 | 20 | 30 | 10 | None | 1 | None (Root) | 10 | 30 | 1 |
-| 10 | TODO | TODO | TODO | TODO | TODO | TODO | TODO | TODO |
+| 10 | 20 | None | None | 0 | 20 | None | None | 0 |
 
 Confirm that the in-order traversal of the keys remains `[10, 20, 30]` both
 before and after the rotation.
@@ -576,8 +584,12 @@ python3 rotation_practice.py
 **TODO 4.3A:** When rotating node $x$ to the left around child $y$, why must the
 height of $x$ be recalculated before the height of $y$?
 
+Node x becomes the child of y, so since the height of the parents depend on the height of the children, node x must be calculated first.
+
 **TODO 4.3B:** Why do single and double rotations execute in strictly $O(1)$
 time, regardless of whether the tree contains 3 nodes or 3,000,000 nodes?
+
+The only thing happening in these rotations are pointer reference updates, so these all happen in O(1) time no matter the number of nodes.
 
 A single rotation modifies a fixed set of 6 pointers and updates 2 height
 fields, taking $\Theta(1)$ time and $\Theta(1)$ auxiliary space. A double rotation
